@@ -1,37 +1,31 @@
 ## Welcome to AlcFx Currency Converter
 
-You can use the [editor on GitHub](https://github.com/delino12/alcFx/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+AlcFx is a currency converter application that allows converting currencies in both offline and online mode, AlcFx is also a PWA software, fast and easy to use
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+To visit this page to go [AlcFx](https://delino12.github.io/alcFx/)
 
-### Markdown
+### How to use
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+Simply select the base currency you like to exchange from and select the currency you will like to compare with, you can also add amount or vol to get the total exchange rate. 
 
-```markdown
-Syntax highlighted code block
+```
+- Services Worker
+- Cache API
+- IndexedDB
 
-# Header 1
-## Header 2
-### Header 3
+Building a progressive web application required all 3 api to provide a dynamic and massively improve the user experience
 
-- Bulleted
-- List
+_To learn more about IndexedDB would recommend you check out the link below_
+[IndexedDB](https://w3c.github.io/IndexedDB/)
 
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+For more on services worker and cache api details see [Service Worker](https://developers.google.com/web/ilt/pwa/introduction-to-service-worker).
 
-### Jekyll Themes
+### Github page
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/delino12/alcFx/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+This application is hosted on using Github page [visit here](https://delino12.github.io/alcFx/).
 
 ### Support or Contact
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+Having trouble with Pages? Feel free to send me a mail at hello@ekpotoliberty.com
