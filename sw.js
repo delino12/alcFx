@@ -8,6 +8,7 @@
 // register cache name
 var appCacheName = 'alcfx-static-v1';
 var appCacheAssets = [
+	'/',
 	'css/app.css',
 	'js/app.js',
 	'img/icon.png',
@@ -16,8 +17,7 @@ var appCacheAssets = [
 	'https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js',
 	'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js',
 	'https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js',
-	'https://free.currencyconverterapi.com/api/v5/currencies',
-	'https://free.currencyconverterapi.com/api/v5/convert?q=USD_PHP'
+	'https://free.currencyconverterapi.com/api/v5/currencies'
 ];
 
 // on install state

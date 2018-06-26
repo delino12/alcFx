@@ -19,6 +19,11 @@ $(document).ready(function (){
 if(navigator.serviceWorker){
 	// register the services worker
 	registerServiceWorker();
+
+	// listen for controller change
+	navigator.serviceWorker.addEventListener('controllerchange', function (){
+		window.location.reload();
+	});
 }else{
 	console.log('browser does not support Services Worker !');
 }
@@ -26,7 +31,7 @@ if(navigator.serviceWorker){
 // register sw
 function registerServiceWorker() {
 	// register the service worker
-	navigator.serviceWorker.register('../sw.js').then(function(sw) {
+	navigator.serviceWorker.register('../sw.js', {scope: '/'}).then(function(sw) {
 		// check service worker controller
 		if(!navigator.serviceWorker.controller) return;
 
@@ -43,7 +48,7 @@ function registerServiceWorker() {
 
 		// on updated found
 		sw.addEventListener('updatefound', function (){
-			console.log('there is an update on sw');
+			// console.log('there is an update on sw');
 			trackInstalling(sw.installing);
 		});
 	});
@@ -62,30 +67,31 @@ function trackInstalling(worker) {
 function updateIsReady(){
 	// console.log('a new SW is ready to take over !');
 	pushUpdateFound();
-	return false;
 }
 
 // push updates
 function pushUpdateFound() {
-	$(".notify").fadeIn();
+	$(".notify").slideUp();
   	// console.log('sw found some news updates.. !');
 	$(".notify").html(`
-		<div class="update-div fixed-bottom">
-    		<div class="update-div-content">
-				<span class="update-text">
-					New updates found !
-					<a href="javascript:void(0);" onclick="refreshNews()">
-						refresh
-					</a>
-					|
-					<a href="javascript:void(0);" onclick="skipRefresh()">
-						skip
-					</a>
-				</span> 
+		<div class="card-feel">
+			<div class="navbar fixed-bottom">
+		      	<div class="container d-flex justify-content-between">
+		        	<span class="pull-right">
+		          		<a href="javascript:void(0);" class="nav-item" onclick="refreshPage()">
+							<i class="material-icons">refresh</i>
+						</a>
+						<a href="javascript:void(0);" class="nav-item" onclick="skipRefresh()">
+							<i class="material-icons">skip_next</i>
+						</a>
+		        	</span>
+		      	</div>
 			</div>
 		</div>
 	`);
 }
+
+
 
 
 /*
@@ -115,10 +121,7 @@ function openDatabase(){
 	  	var upgradeDB = event.target.result;
 
 	  	// create an objectStore for this database
-	  	var objectStore = upgradeDB.createObjectStore("currencies", {
-	  		keyPath: "id",
-	  		autoIncrement : true
-	  	});
+	  	var objectStore = upgradeDB.createObjectStore("currencies");
 	};
 
 	// return db instance
@@ -126,25 +129,59 @@ function openDatabase(){
 }
 
 // save to currencies object
-function saveToDatabase(object){
+function saveToDatabase(data){
 	// init database
 	const db = openDatabase();
 	
 	// on success add user
 	db.onsuccess = (event) => {
+
 		// console.log('database has been openned !');
-		// console.log(db);
 		const query = event.target.result;
-		const store = query.transaction("currencies", "readwrite").objectStore("currencies");
-		
-		// use for of loop
-		store.add(object);
+
+	  	// check if already exist symbol
+		const currency = query.transaction("currencies").objectStore("currencies").get(data.symbol);
+
+		// wait for users to arrive
+	  	currency.onsuccess = (event) => {
+	  		const data 	= event.target.result;
+	  		const store = query.transaction("currencies", "readwrite").objectStore("currencies");
+
+	  		if(!data){ 
+	  			// save data into currency object
+				store.add(data, data.symbol);
+	  		}else{
+	  			// update data existing currency object
+				store.put(data, data.symbol);
+	  		};
+	  	}
 	}
 }
 
 // fetch from web database
-function fetchFromWebDatabase() {
-	// body...
+function fetchFromDatabase(symbol) {
+	// init database
+	const db = openDatabase();
+	
+	// on success add user
+	db.onsuccess = (event) => {
+
+		// console.log('database has been openned !');
+		const query = event.target.result;
+
+		// check if already exist symbol
+		const currencies = query.transaction("currencies").objectStore("currencies").get(symbol);
+
+		// wait for users to arrive
+	  	currencies.onsuccess = (event) => {
+	  		const data = event.target.result;
+	  		if(!data){ 
+	  			console.log("could not find any record on this") 
+	  		}else{
+	  			console.log(data);
+	  		};
+	  	}
+	}
 }
 
 /*
@@ -156,15 +193,14 @@ function fetchFromWebDatabase() {
 const fetchAllCurrencies = (e) => {
 	// used es6 Arrow func here..
 	$.get('https://free.currencyconverterapi.com/api/v5/currencies', (data) => {
+		// if data not fetch
 		if(!data) console.log("Could not fetch any data");
-		// save to database
-		// saveToDatabase(data);
-
+		
 		// convert pairs to array
 		const pairs = objectToArray(data.results);
-		$("#from-currency").html(``);
-		$("#to-currency").html(``);
-		$.each(pairs, (index, val) => {
+
+		// used for of loop
+		for(let val of pairs){
 			// using template leteral
 			$("#from-currency").append(`
 				<option value="${val.id}">${val.id} (${val.currencyName})</option>
@@ -172,7 +208,7 @@ const fetchAllCurrencies = (e) => {
 			$("#to-currency").append(`
 				<option value="${val.id}">${val.id} (${val.currencyName})</option>
 			`);
-		});
+		}
 	});
 }
 
@@ -223,6 +259,15 @@ function convertCurrency(){
 					<b>${amount * val.val}</b>
 				</div>
 			`);
+
+			// save object results for later use
+			let object = {
+				symbol: body,
+				value: val.val
+			};
+
+			// save to database
+			saveToDatabase(object);
 		});
 	});
 
