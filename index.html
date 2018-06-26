@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
     <meta name="description" content="ALC FX is a currency converter that works both offline and online.">
     <meta name="author" content="Ekpoto Liberty Bernard">
+    <link rel="icon" type="icon/image" href="img/icon.png">
     <title>ALC FX (Currency Converter)</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
@@ -13,7 +14,64 @@
 </head>
 <body>
     <!-- navigation section -->
+    <header>
+        <div class="navbar box-shadow">
+          <div class="container d-flex justify-content-between">
+            <a href="javascript:void(0);" class="nav-item">
+              <i class="material-icons">menu</i>
+            </a>
+            <a href="#" class="navbar-brand d-flex align-items-center">
+              AlcFx
+            </a>
+            <span class="pull-right">
+              <a href="javascript:void(0);" class="nav-item">
+                <i class="material-icons">linear_scale</i>
+              </a>
+            </span>
+          </div>
+        </div>
+    </header>
 
+    <!-- contents section -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="error_msg text-center"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="results"></div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card-feel">
+                    <h1 class="lead text-center">Select Currency</h1>
+                    <form method="post" onsubmit="return convertCurrency()">
+                        <div class="from-group">
+                            <label for="from-currency">From</label>
+                            <select class="form-control" id="from-currency"></select>
+                        </div>
+                        <br />
+                        <div class="from-group">
+                            <label for="to-currency">To</label>
+                            <select class="form-control" id="to-currency"></select>
+                        </div>
+                        <br />
+
+                        <div class="from-group text-center">
+                            <label for="convert-btn"></label>
+                            <button class="btn btn-default" id="convert-btn">Convert</button>
+                        </div>
+                        <br />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- scripts section -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
