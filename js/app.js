@@ -26,7 +26,7 @@ if(navigator.serviceWorker){
 // register sw
 function registerServiceWorker() {
 	// register the service worker
-	navigator.serviceWorker.register('/sw.js', {scope: '/'}).then(function(sw) {
+	navigator.serviceWorker.register('../sw.js').then(function(sw) {
 		// check service worker controller
 		if(!navigator.serviceWorker.controller) return;
 
@@ -173,18 +173,14 @@ const fetchAllCurrencies = (e) => {
 				<option value="${val.id}">${val.id} (${val.currencyName})</option>
 			`);
 		});
-
-	}).fail((err) => {
-
-		// fetch from indexedDB
-		fetchFromWebDatabase();
 	});
 }
 
 // convert currencies 
-function convertCurrency() {
-	let from = $("#from-currency").val();
-	let to 	 = $("#to-currency").val();
+function convertCurrency(){
+	let from 	= $("#from-currency").val();
+	let to 		= $("#to-currency").val();
+	let amount	= $("#convert-amount").val();
 
 	// restrict user for converting same currency
 	if(from == to){
@@ -213,23 +209,21 @@ function convertCurrency() {
 	};
 
 	// convert currencies
-	$.get('https://free.currencyconverterapi.com/api/v5/convert', query, function (data){
+	$.get('https://free.currencyconverterapi.com/api/v5/convert', query, (data) => {
 		// convert to array
 		const pairs = objectToArray(data.results);
 
-		// $(".results").html(``);
+		// iterate pairs
 		$.each(pairs, function(index, val) {
 			$(".results").append(`
 				<div class="card-feel">
                     <h1 class="small text-center"> <b>${val.fr}</b> & <b>${val.to}</b> converted successfully !</h1>
 					<hr />
-					Exchange rate from <b>${val.fr}</b> to <b>${val.to}</b> is: <b>${val.val}</b>
+					Exchange rate from <b>${val.fr}</b> to <b>${val.to}</b> is: <br /> 
+					<b>${amount * val.val}</b>
 				</div>
 			`);
 		});
-
-		// console.log(data);
-		// console.log(pairs);
 	});
 
 	// void form
@@ -241,4 +235,10 @@ function objectToArray(objects) {
 	// body...
 	const results = Object.keys(objects).map(i => objects[i]);
 	return results;
+}
+
+// refresh page
+function refreshPage() {
+	// body...
+	window.location.reload();
 }

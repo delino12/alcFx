@@ -24,8 +24,8 @@
               AlcFx
             </a>
             <span class="pull-right">
-              <a href="javascript:void(0);" class="nav-item">
-                <i class="material-icons">linear_scale</i>
+              <a href="javascript:void(0);" onclick="refreshPage()" class="nav-item">
+                <i class="material-icons">refresh</i>
               </a>
             </span>
           </div>
@@ -45,17 +45,24 @@
                 <div class="results"></div>
             </div>
         </div>
-        
+
         <div class="row">
             <div class="col-md-12">
                 <div class="card-feel">
                     <h1 class="lead text-center">Select Currency</h1>
                     <form method="post" onsubmit="return convertCurrency()">
                         <div class="from-group">
+                            <label for="convert-amount">Amount</label>
+                            <input type="number" min="1" step=any id="convert-amount" value="1" class="form-control" placeholder="Enter Amount">
+                        </div>
+                        <br />
+
+                        <div class="from-group">
                             <label for="from-currency">From</label>
                             <select class="form-control" id="from-currency"></select>
                         </div>
                         <br />
+
                         <div class="from-group">
                             <label for="to-currency">To</label>
                             <select class="form-control" id="to-currency"></select>
