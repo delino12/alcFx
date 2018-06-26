@@ -59,8 +59,8 @@ self.addEventListener('fetch', function(event){
 });
 
 // on message state
-self.addEventListener('message', function(event){
-	if(event.data.action = 'skipWaiting'){
+self.onmessage = (message) => {
+	if(message.data.action == 'skipWaiting'){
 		self.skipWaiting();
 	}
-});
+};

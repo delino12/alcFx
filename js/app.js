@@ -18,7 +18,7 @@ $(document).ready(function (){
 // init page and register services worker
 if(navigator.serviceWorker){
 	// register the services worker
-	// registerServiceWorker();
+	registerServiceWorker();
 }else{
 	console.log('browser does not support Services Worker !');
 }
@@ -32,8 +32,7 @@ function registerServiceWorker() {
 
 		// on waiting state
 		if(sw.waiting){
-			console.log('You have a waiting service worker');
-			updateIsReady();
+			sw.postMessage({action: 'skipWaiting'});
 		}
 
 		// on installing state
@@ -99,7 +98,7 @@ if (!window.indexedDB) {
 }
 
 // open database 
-const openDatabase = (e) => {
+function openDatabase(){
 	// return db instances
 	const DB_NAME 	= 'alcfx';
 	const database 	= indexedDB.open(DB_NAME, 1);
@@ -127,8 +126,7 @@ const openDatabase = (e) => {
 }
 
 // save to currencies object
-const saveToDatabase = (data) => {
-
+function saveToDatabase(object){
 	// init database
 	const db = openDatabase();
 	
@@ -140,10 +138,13 @@ const saveToDatabase = (data) => {
 		const store = query.transaction("currencies", "readwrite").objectStore("currencies");
 		
 		// use for of loop
-		for(let result of data.results){
-			store.add(result);
-		}
+		store.add(object);
 	}
+}
+
+// fetch from web database
+function fetchFromWebDatabase() {
+	// body...
 }
 
 /*
@@ -156,12 +157,14 @@ const fetchAllCurrencies = (e) => {
 	// used es6 Arrow func here..
 	$.get('https://free.currencyconverterapi.com/api/v5/currencies', (data) => {
 		if(!data) console.log("Could not fetch any data");
+		// save to database
+		// saveToDatabase(data);
 
 		// convert pairs to array
 		const pairs = objectToArray(data.results);
 		$("#from-currency").html(``);
 		$("#to-currency").html(``);
-		$.each(pairs, function(index, val) {
+		$.each(pairs, (index, val) => {
 			// using template leteral
 			$("#from-currency").append(`
 				<option value="${val.id}">${val.id} (${val.currencyName})</option>
@@ -170,6 +173,11 @@ const fetchAllCurrencies = (e) => {
 				<option value="${val.id}">${val.id} (${val.currencyName})</option>
 			`);
 		});
+
+	}).fail((err) => {
+
+		// fetch from indexedDB
+		fetchFromWebDatabase();
 	});
 }
 
@@ -221,13 +229,12 @@ function convertCurrency() {
 		});
 
 		// console.log(data);
-		console.log(pairs);
+		// console.log(pairs);
 	});
 
 	// void form
 	return false;
 }
-
 
 // array generators using map & arrow func
 function objectToArray(objects) {
