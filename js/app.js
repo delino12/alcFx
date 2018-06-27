@@ -160,6 +160,16 @@ function fetchFromDatabase(symbol, amount) {
 		// wait for users to arrive
 	  	currency.onsuccess = (event) => {
 	  		const data = event.target.result;
+	  		if(data == null){
+	  			$(".results").append(`
+					<div class="card-feel">
+		                <span class="text-danger">
+		                	You are currently offline... check internet connectivity and try again.
+		                </span>
+					</div>
+				`);
+	  		}
+
 			// console.log(data);
 			// console.log(data);
 			let pairs = symbol.split('_');
