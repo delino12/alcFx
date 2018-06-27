@@ -190,7 +190,7 @@ function fetchFromDatabase(symbol, amount) {
 	                <h1 class="small text-center"> <b>${amount}</b> <b>${fr}</b> & <b>${to}</b> converted successfully !</h1>
 					<hr />
 					Exchange rate for <b>${amount}</b> <b>${fr}</b> to <b>${to}</b> is: <br /> 
-					<b>${numeral(amount * data.value).format('0,0')}</b>
+					<b>${numeral(amount * data.value).format('0.000')}</b>
 				</div>
 			`);
 	  	}
