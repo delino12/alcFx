@@ -32,7 +32,7 @@ if(navigator.serviceWorker){
 // register sw
 function registerServiceWorker() {
 	// register the service worker
-	navigator.serviceWorker.register('sw.js', {scope: './alcFx'}).then(function(sw) {
+	navigator.serviceWorker.register('sw.js').then(function(sw) {
 		// check service worker controller
 		if(!navigator.serviceWorker.controller) return;
 
