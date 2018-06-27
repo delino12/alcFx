@@ -32,7 +32,7 @@ if(navigator.serviceWorker){
 // register sw
 function registerServiceWorker() {
 	// register the service worker
-	navigator.serviceWorker.register('../sw.js', {scope: '/'}).then(function(sw) {
+	navigator.serviceWorker.register('../../sw.js', {scope: '/'}).then(function(sw) {
 		// check service worker controller
 		if(!navigator.serviceWorker.controller) return;
 
@@ -281,7 +281,6 @@ function objectToArray(objects) {
 
 // refresh page
 function refreshPage() {
-
 	// body...
 	window.location.reload();
 }
