@@ -24,6 +24,7 @@ if(navigator.serviceWorker){
 	navigator.serviceWorker.addEventListener('controllerchange', function (){
 		window.location.reload();
 	});
+
 }else{
 	console.log('browser does not support Services Worker !');
 }
@@ -37,18 +38,17 @@ function registerServiceWorker() {
 
 		// on waiting state
 		if(sw.waiting){
-			sw.postMessage({action: 'skipWaiting'});
+			updateIsReady(sw.waiting);
+			return;
 		}
 
 		// on installing state
 		if(sw.installing){
-			console.log('service worker is installing');
 			trackInstalling(sw.installing);
 		}
 
 		// on updated found
 		sw.addEventListener('updatefound', function (){
-			// console.log('there is an update on sw');
 			trackInstalling(sw.installing);
 		});
 	});
@@ -58,39 +58,24 @@ function registerServiceWorker() {
 function trackInstalling(worker) {
 	worker.addEventListener('statechange', function(){
 		if(worker.state == 'installed'){
-			updateIsReady();
+			updateIsReady(worker);
 		}
 	});
 }
 
 // update app 
-function updateIsReady(){
+function updateIsReady(sw){
 	// console.log('a new SW is ready to take over !');
+	sw.postMessage('message', {action: 'skipWaiting'});
 	pushUpdateFound();
+
 }
 
 // push updates
 function pushUpdateFound() {
-	$(".notify").slideUp();
-  	// console.log('sw found some news updates.. !');
-	$(".notify").html(`
-		<div class="card-feel">
-			<div class="navbar fixed-bottom">
-		      	<div class="container d-flex justify-content-between">
-		        	<span class="pull-right">
-		          		<a href="javascript:void(0);" class="nav-item" onclick="refreshPage()">
-							<i class="material-icons">refresh</i>
-						</a>
-						<a href="javascript:void(0);" class="nav-item" onclick="skipRefresh()">
-							<i class="material-icons">skip_next</i>
-						</a>
-		        	</span>
-		      	</div>
-			</div>
-		</div>
-	`);
+	$(".notify").fadeIn();
+  	console.log('sw found some updates.. !');
 }
-
 
 
 
@@ -144,10 +129,10 @@ function saveToDatabase(data){
 
 		// wait for users to arrive
 	  	currency.onsuccess = (event) => {
-	  		const data 	= event.target.result;
-	  		const store = query.transaction("currencies", "readwrite").objectStore("currencies");
+	  		const dbData = event.target.result;
+	  		const store  = query.transaction("currencies", "readwrite").objectStore("currencies");
 
-	  		if(!data){ 
+	  		if(!dbData){ 
 	  			// save data into currency object
 				store.add(data, data.symbol);
 	  		}else{
@@ -175,11 +160,9 @@ function fetchFromDatabase(symbol) {
 		// wait for users to arrive
 	  	currencies.onsuccess = (event) => {
 	  		const data = event.target.result;
-	  		if(!data){ 
-	  			console.log("could not find any record on this") 
-	  		}else{
-	  			console.log(data);
-	  		};
+
+	  		// return data
+			return data;
 	  	}
 	}
 }
@@ -243,7 +226,7 @@ function convertCurrency(){
 	let query = {
 		q: body
 	};
-
+	
 	// convert currencies
 	$.get('https://free.currencyconverterapi.com/api/v5/convert', query, (data) => {
 		// convert to array
@@ -253,10 +236,10 @@ function convertCurrency(){
 		$.each(pairs, function(index, val) {
 			$(".results").append(`
 				<div class="card-feel">
-                    <h1 class="small text-center"> <b>${val.fr}</b> & <b>${val.to}</b> converted successfully !</h1>
+                    <h1 class="small text-center"> <b>${amount}</b>  <b>${val.fr}</b> to <b>${val.to}</b> converted successfully !</h1>
 					<hr />
-					Exchange rate from <b>${val.fr}</b> to <b>${val.to}</b> is: <br /> 
-					<b>${amount * val.val}</b>
+					Exchange rate for <b>${amount}</b> <b>${val.fr}</b> to <b>${val.to}</b> is: <br /> 
+					<b>${numeral(amount * val.val).format('0.000')}</b>
 				</div>
 			`);
 
@@ -269,6 +252,22 @@ function convertCurrency(){
 			// save to database
 			saveToDatabase(object);
 		});
+
+	}).fail((err) => {
+		// check currencies from indexedDB
+		const dbData = fetchFromDatabase(body);
+
+		console.log(dbData);
+
+		// console.log(dbData);
+		// $(".results").append(`
+		// 	<div class="card-feel">
+  //               <h1 class="small text-center"> <b>${dbData.fr}</b> & <b>${dbData.to}</b> converted successfully !</h1>
+		// 		<hr />
+		// 		Exchange rate from <b>${dbData.fr}</b> to <b>${dbData.to}</b> is: <br /> 
+		// 		<b>${amount * dbData.val}</b>
+		// 	</div>
+		// `);
 	});
 
 	// void form
@@ -284,6 +283,7 @@ function objectToArray(objects) {
 
 // refresh page
 function refreshPage() {
+
 	// body...
 	window.location.reload();
 }
