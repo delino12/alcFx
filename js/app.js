@@ -38,7 +38,8 @@ function registerServiceWorker() {
 
 		// on waiting state
 		if(sw.waiting){
-			updateIsReady(sw.waiting);
+			// updateIsReady(sw.waiting);
+			sw.postMessage('message', {action: 'skipWaiting'});
 			return;
 		}
 
@@ -66,9 +67,8 @@ function trackInstalling(worker) {
 // update app 
 function updateIsReady(sw){
 	// console.log('a new SW is ready to take over !');
-	sw.postMessage('message', {action: 'skipWaiting'});
+	// sw.postMessage('message', {action: 'skipWaiting'});
 	pushUpdateFound();
-
 }
 
 // push updates
@@ -144,7 +144,7 @@ function saveToDatabase(data){
 }
 
 // fetch from web database
-function fetchFromDatabase(symbol) {
+function fetchFromDatabase(symbol, amount) {
 	// init database
 	const db = openDatabase();
 	
@@ -155,14 +155,25 @@ function fetchFromDatabase(symbol) {
 		const query = event.target.result;
 
 		// check if already exist symbol
-		const currencies = query.transaction("currencies").objectStore("currencies").get(symbol);
+		const currency = query.transaction("currencies").objectStore("currencies").get(symbol);
 
 		// wait for users to arrive
-	  	currencies.onsuccess = (event) => {
+	  	currency.onsuccess = (event) => {
 	  		const data = event.target.result;
+			// console.log(data);
+			// console.log(data);
+			let pairs = symbol.split('_');
+			let fr = pairs[0];
+			let to = pairs[1];
 
-	  		// return data
-			return data;
+			$(".results").append(`
+				<div class="card-feel">
+	                <h1 class="small text-center"> <b>${amount}</b> <b>${fr}</b> & <b>${to}</b> converted successfully !</h1>
+					<hr />
+					Exchange rate from <b>${fr}</b> to <b>${to}</b> is: <br /> 
+					<b>${numeral(amount * data.value).format('0,0')}</b>
+				</div>
+			`);
 	  	}
 	}
 }
@@ -226,7 +237,7 @@ function convertCurrency(){
 	let query = {
 		q: body
 	};
-	
+
 	// convert currencies
 	$.get('https://free.currencyconverterapi.com/api/v5/convert', query, (data) => {
 		// convert to array
@@ -252,22 +263,9 @@ function convertCurrency(){
 			// save to database
 			saveToDatabase(object);
 		});
-
 	}).fail((err) => {
 		// check currencies from indexedDB
-		const dbData = fetchFromDatabase(body);
-
-		console.log(dbData);
-
-		// console.log(dbData);
-		// $(".results").append(`
-		// 	<div class="card-feel">
-  //               <h1 class="small text-center"> <b>${dbData.fr}</b> & <b>${dbData.to}</b> converted successfully !</h1>
-		// 		<hr />
-		// 		Exchange rate from <b>${dbData.fr}</b> to <b>${dbData.to}</b> is: <br /> 
-		// 		<b>${amount * dbData.val}</b>
-		// 	</div>
-		// `);
+		fetchFromDatabase(body, amount);
 	});
 
 	// void form
