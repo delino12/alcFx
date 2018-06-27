@@ -160,15 +160,20 @@ function fetchFromDatabase(symbol, amount) {
 		// wait for users to arrive
 	  	currency.onsuccess = (event) => {
 	  		const data = event.target.result;
-	  		console.log(data);
+	  		// console.log(data);
 	  		if(data == null){
-	  			$(".results").append(`
+	  			$(".error_msg").append(`
 					<div class="card-feel">
 		                <span class="text-danger">
 		                	You are currently offline... check internet connectivity and try again.
 		                </span>
 					</div>
 				`);
+
+				// hide error message
+				setTimeout((e) => {
+					$(".error_msg").html("");
+				}, 1000 * 3);
 
 				// void
 				return;
