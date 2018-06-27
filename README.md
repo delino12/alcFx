@@ -28,4 +28,4 @@ This application is hosted on using Github page [visit here](https://delino12.gi
 
 ### Support or Contact
 
-Having trouble with Pages? Feel free to send me a mail at hello@ekpotoliberty.com
+Having trouble with Pages? Feel free to send me a mail at ekpoto.liberty@gmail.com
