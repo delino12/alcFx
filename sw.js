@@ -8,12 +8,12 @@
 // register cache name
 var appCacheName = 'alcfx-static-v1';
 var appCacheAssets = [
-	'/',
-	'css/app.css',
-	'js/app.js',
-	'img/icon.png',
-	'img/logo.png',
-	'manifest.json',
+	'/https://delino12.github.io/alcFx/',
+	'https://delino12.github.io/alcFx/css/app.css',
+	'https://delino12.github.io/alcFx/js/app.js',
+	'https://delino12.github.io/alcFx/img/icon.png',
+	'https://delino12.github.io/alcFx/img/logo.png',
+	'https://delino12.github.io/alcFx/manifest.json',
 	'https://fonts.googleapis.com/icon?family=Material+Icons',
 	'https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css',
 	'https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js',
