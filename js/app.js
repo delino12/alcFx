@@ -160,6 +160,7 @@ function fetchFromDatabase(symbol, amount) {
 		// wait for users to arrive
 	  	currency.onsuccess = (event) => {
 	  		const data = event.target.result;
+	  		console.log(data);
 	  		if(data == null){
 	  			$(".results").append(`
 					<div class="card-feel">
@@ -168,6 +169,9 @@ function fetchFromDatabase(symbol, amount) {
 		                </span>
 					</div>
 				`);
+
+				// void
+				return;
 	  		}
 
 			// console.log(data);
